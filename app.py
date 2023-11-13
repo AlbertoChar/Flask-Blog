@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import json
 
+from form import RegistrationForm, LoginForm
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'aa670e8e97251aae515a4f64196761c9'
 
 
 @app.route('/update/<int:post_id>', methods=['GET', 'POST'])
@@ -21,7 +24,7 @@ def update(post_id):
         post['content'] = request.form.get('content')
         with open('blog_posts.json', 'w') as file:
             json.dump(blog_posts, file, indent=4)
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
 
     return render_template('update.html', post=post)
 
@@ -39,7 +42,7 @@ def delete(post_id):
     with open('blog_posts.json', 'w') as file:
         json.dump(blog_posts, file, indent=4)
 
-    return redirect(url_for('index'))
+    return redirect(url_for('home'))
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -58,12 +61,29 @@ def add():
         with open('blog_posts.json', 'w') as file:
             json.dump(blog_posts, file, indent=4)
 
-        return redirect(url_for('index'))
-    return render_template('add.html')
+        return redirect(url_for('home'))
+    return render_template('add.html', title="Add Post")
+
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}.', 'success')
+        return redirect(url_for('home'))
+
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route("/login")
+def login():
+    form = LoginForm()
+    return render_template('login.html', title='Login', form=form)
 
 
 @app.route('/')
-def index():
+@app.route('/home')
+def home():
     with open('blog_posts.json', 'r') as file:
         blog_posts = json.load(file)
     return render_template('index.html', posts=blog_posts)
@@ -71,4 +91,3 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
