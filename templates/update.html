@@ -14,7 +14,8 @@
         <label for="content">Content:</label>
         <textarea id="content" name="content" rows="4" required>{{ post['content'] }}</textarea>
 
-        <button type="submit">Update Post</button>
+        <button type="submit" class="btn btn-outline-info">Update Post</button>
+        </form>
     </form>
 
     <a href="{{ url_for('home') }}">Back to Home</a>
