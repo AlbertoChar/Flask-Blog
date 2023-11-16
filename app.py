@@ -5,7 +5,6 @@ from form import RegistrationForm, LoginForm
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'aa670e8e97251aae515a4f64196761c9'
 
 
 @app.route('/update/<int:post_id>', methods=['GET', 'POST'])
